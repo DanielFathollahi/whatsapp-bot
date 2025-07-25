@@ -2,11 +2,8 @@
   "name": "whatsapp-bot",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.6.2"
+    "whatsapp-web.js": "^1.19.6",
+    "qrcode-terminal": "^0.12.0"
   }
 }
