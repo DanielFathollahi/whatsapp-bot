@@ -1,26 +1,22 @@
-import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
-import { Boom } from "@hapi/boom";
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
 
-const { state, saveCreds } = await useMultiFileAuthState("auth_info");
-
-const sock = makeWASocket({
-    auth: state,
-    printQRInTerminal: true
+const client = new Client({
+    authStrategy: new LocalAuth()
 });
 
-sock.ev.on("creds.update", saveCreds);
+client.on('qr', qr => {
+    qrcode.generate(qr, { small: true });
+});
 
-sock.ev.on("messages.upsert", async ({ messages }) => {
-    const msg = messages[0];
-    if (!msg.message) return;
+client.on('ready', () => {
+    console.log('🤖 ربات واتساپ آماده است!');
+});
 
-    const from = msg.key.remoteJid;
-    const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
-
-    console.log("📩 پیام دریافت شد:", text);
-
-    if (text === "سلام") {
-        await sock.sendMessage(from, { text: "سلام! چطوری؟" });
+client.on('message', msg => {
+    if (msg.body.toLowerCase() === 'سلام') {
+        msg.reply('سلام دوست عزیز 👋');
     }
 });
 
+client.initialize();
